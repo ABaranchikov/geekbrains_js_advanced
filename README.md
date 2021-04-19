@@ -1,1 +1,3 @@
-# geekbrains_js_advanced
+# Продвинутый JavaScript
+
+апрель 2021
