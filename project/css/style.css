@@ -1,0 +1,52 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.my_header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 60px;
+    background-color: #DCE1E3;
+}
+
+.btn-cart {
+    background-color: #B73225;
+    border:none;
+    color: white;
+    font-size: 18px;
+    padding: 5px;
+    margin: 0 15px 0 0;
+    height: 40px;
+    width: 150px;
+    outline: none;
+}
+
+.product-item {
+  margin: 10px 0 0 0;
+  background-color: #DCE1E3;
+  padding: 5px;
+}
+
+
+.by-btn {
+    background-color: #004E7C;
+    border-color: #004E7C;
+    color:white;
+    outline: none;
+    height: 40px;
+    width: 150px;
+}
+
+/*
+Red Highlight: #B73225
+
+Blue Minded: #004E7C
+
+Maroon 6: #591COB
+
+Grey Water: #5C5F58
+
+Lighter Grey: #DCE1E3
+*/
