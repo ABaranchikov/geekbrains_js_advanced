@@ -23,22 +23,54 @@ body {
     outline: none;
 }
 
+.products {
+    display: flex;
+    justify-content: space-around;
+}
+
 .product-item {
   margin: 10px 0 0 0;
-  background-color: #DCE1E3;
+  border: 1px solid #5C5F58;
   padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 
-.by-btn {
+.buy-btn {
     background-color: #004E7C;
     border-color: #004E7C;
+    font-size: 14px;
     color:white;
     outline: none;
     height: 40px;
     width: 150px;
 }
 
+.buy-btn:hover {
+    font-size: 16px;
+}
+
+.buy-btn:active {
+    background-color: white;
+    border-color: #004E7C;
+    color:#000;
+}
+
+.btn-cart:active {
+    background-color: white;
+    color: #B73225;
+    border: 1px solid #B73225;
+}
+
+.product-full-price {
+    font-size: 26px;
+    color: #000;
+    padding: 30px;
+    display: block;
+    text-align: center;
+}
 /*
 Red Highlight: #B73225
 
