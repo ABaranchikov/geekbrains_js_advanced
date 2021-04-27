@@ -116,7 +116,6 @@ class ProductItem {
                       <h3>${this.title}</h3>
                       <p>${this.price} \u20bd</p>
                       <button class="buy-btn">Купить</button>
-                      <button class="del-btn">Удалить</button>
                   </div>
               </div>`;
     }
