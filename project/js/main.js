@@ -2,124 +2,86 @@
 
 const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
-const getRequest = (url) => {
-    return new Promise((resolve, reject) => {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
+const app = new Vue({
+    el: '#app',
+    data: {
+        catalogUrl: '/catalogData.json',
+        getBasketUrl: '/getBasket.json',
+        products: [],  //товары
+        basketItems: [], //корзина
+        imgCatalog: 'https://via.placeholder.com/200x150',
+        searchLine: '', //строка поиска
+        isVisibleCart: false, //флаг видимости корзины
+        isEmptyProducts: false, //флаг пустых данных
+        isEmptyBasket: false, //флаг пустых данных
+    },
+    methods: {
+        getJson(url) {
+            return fetch(url)
+                .then(result => result.json())
+                .catch(error => {
+                    console.log(error);
+                })
+        },
 
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                if (xhr.status == 200) {
-                    resolve(xhr.responseText);
-                } else {
-                    reject(xhr.statusText);
-                }
+        addProduct(product) {
+            console.log(product.id_product);
+        },
+
+        deleteProduct(product) {
+            console.log(product.id_product);
+            let index = this.basketItems.indexOf(product);
+            if (index > -1) {
+                this.basketItems.splice(index, 1);
             }
-        };
+            this.checkBasket();
+        },
 
-        xhr.onerror = () => {
-            reject(new Error("Network Error"));
-        };
+        filterGoods() {
+            console.log('filter: ' + this.searchLine);
 
-        xhr.send();
-    });
-};
-
-
-class ProductList {
-    constructor(container = '.products') {
-        this.container = container;
-        this._goods = []; // data
-        this._allProducts = []; // массив экземпляров товаров на основе this._goods
-
-        this._getGoods2();
-    }
-
-    _getGoods() {
-        return fetch(`${API}/catalogData.json`)
-            .then(result => result.json())
-            .catch(error => console.log(error));
-    }
-
-    _getGoods2() {
-        return getRequest(`${API}/catalogData.json`)
-            .then(result => JSON.parse(result))
-            .then((data) => {
-                this._goods = data;
-                this._render();
+            const regexp = new RegExp(this.searchLine, 'i');
+            this.filtered = this.products.filter(product => regexp.test(product.product_name));
+            this.products.forEach(el => {
+                const block = document.querySelector(`.product-item[data-id="${el.id_product}"]`);
+                if (!this.filtered.includes(el)) {
+                    block.classList.add('invisible');
+                } else {
+                    block.classList.remove('invisible');
+                }
             })
-            .catch(error => console.log(error));
-    }
+        },
 
+        getBasket() {
+            this.isVisibleCart = !this.isVisibleCart;
+            if (this.isVisibleCart) {
+                this.getJson(`${API + this.getBasketUrl}`)
+                    .then(data => {
+                        for (let el of data.contents) {
+                            this.basketItems.push(el);
+                        }
+                        this.checkBasket();
+                    });
+            } else {
+                this.basketItems = [];
+            }
 
-    _render() {
-        const block = document.querySelector(this.container);
-        block.innerHTML = "";
+        },
 
-        for (const product of this._goods) {
-            const productObject = new ProductItem(product);
-            this._allProducts.push(productObject);
-            block.insertAdjacentHTML('beforeend', productObject.render());
+        checkBasket() {
+            this.isEmptyBasket = this.basketItems.length == 0;
         }
-    }
 
-    addToBasket() {
-        return getRequest(`${API}/addToBasket.json`)
-            .then(result => JSON.parse(result))
+    },
+
+    created() {
+        this.getJson(`${API + this.catalogUrl}`)
             .then(data => {
-                if (data.result == 1) {
-                    console.log("Добавили в корзину");
+                for (let el of data) {
+                    this.products.push(el);
                 }
-            })
-            .catch(error => console.log(error));
-    }
+                this.isEmptyProducts = this.products.length == 0;
+            });
+    },
 
-    deleteFromBasket() {
-        return getRequest(`${API}/deleteFromBasket.json`)
-            .then(result => JSON.parse(result))
-            .then(data => {
-                if (data.result == 1) {
-                    console.log("Удалили из корзины")
-                }
-            })
-            .catch(error => console.log(error));
-    }
-
-    getBasket() {
-        return getRequest(`${API}/getBasket.json`)
-            .then(result => JSON.parse(result))
-            .then(data => {
-                console.log(data);
-                this._goods = data.contents;
-                this._render()
-            })
-            .catch(error => console.log(error));
-    }
-
-    fullPrice() {
-        return this._goods.reduce((sum, { price }) => sum + price, 0);
-    }
-}
-
-class ProductItem {
-    constructor(product, img = 'https://via.placeholder.com/200x150') {
-        this.title = product.product_name;
-        this.price = product.price;
-        this.id = product.id_product;
-        this.img = img;
-    }
-
-    render() {
-        return `<div class="product-item" data-id="${this.id}">
-                  <img src="${this.img}" alt="Some img">
-                  <div class="desc">
-                      <h3>${this.title}</h3>
-                      <p>${this.price} \u20bd</p>
-                      <button class="buy-btn">Купить</button>
-                  </div>
-              </div>`;
-    }
-}
-
-const catalog = new ProductList();
-document.querySelector('.btn-cart').addEventListener('click', () => catalog.getBasket());
+});
