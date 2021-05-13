@@ -6,14 +6,9 @@ const app = new Vue({
     el: '#app',
     data: {
         catalogUrl: '/catalogData.json',
-        getBasketUrl: '/getBasket.json',
         products: [],  //товары
-        basketItems: [], //корзина
+        filtered: [],  //отфильтрованные товары
         imgCatalog: 'https://via.placeholder.com/200x150',
-        searchLine: '', //строка поиска
-        isVisibleCart: false, //флаг видимости корзины
-        isEmptyProducts: false, //флаг пустых данных
-        isEmptyBasket: false, //флаг пустых данных
     },
     methods: {
         getJson(url) {
@@ -28,49 +23,12 @@ const app = new Vue({
             console.log(product.id_product);
         },
 
-        deleteProduct(product) {
-            console.log(product.id_product);
-            let index = this.basketItems.indexOf(product);
-            if (index > -1) {
-                this.basketItems.splice(index, 1);
-            }
-            this.checkBasket();
-        },
+        filterGoods(searchText) {
+            console.log('filter: ' + searchText);
 
-        filterGoods() {
-            console.log('filter: ' + this.searchLine);
-
-            const regexp = new RegExp(this.searchLine, 'i');
+            const regexp = new RegExp(searchText, 'i');
             this.filtered = this.products.filter(product => regexp.test(product.product_name));
-            this.products.forEach(el => {
-                const block = document.querySelector(`.product-item[data-id="${el.id_product}"]`);
-                if (!this.filtered.includes(el)) {
-                    block.classList.add('invisible');
-                } else {
-                    block.classList.remove('invisible');
-                }
-            })
         },
-
-        getBasket() {
-            this.isVisibleCart = !this.isVisibleCart;
-            if (this.isVisibleCart) {
-                this.getJson(`${API + this.getBasketUrl}`)
-                    .then(data => {
-                        for (let el of data.contents) {
-                            this.basketItems.push(el);
-                        }
-                        this.checkBasket();
-                    });
-            } else {
-                this.basketItems = [];
-            }
-
-        },
-
-        checkBasket() {
-            this.isEmptyBasket = this.basketItems.length == 0;
-        }
 
     },
 
@@ -79,8 +37,8 @@ const app = new Vue({
             .then(data => {
                 for (let el of data) {
                     this.products.push(el);
+                    this.filtered.push(el);
                 }
-                this.isEmptyProducts = this.products.length == 0;
             });
     },
 

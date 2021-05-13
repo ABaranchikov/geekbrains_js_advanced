@@ -13,31 +13,14 @@
         <header>
             <div class="logo">Интернет-магазин</div>
             <div class="cart">
-                <form action="#" class="search-form">
-                    <input type="text" class="search-field" v-model="searchLine">
-                    <button class="btn-search" type="submit" @click="filterGoods">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
-                <button class="btn-cart" type="button" @click="getBasket">Корзина</button>
-                <div class="cart-block" :class="{invisible: !isVisibleCart}">
-                    <h2 v-if="isEmptyBasket">Нет данных</h2>
-                    <div class="product-item" v-for="product of basketItems" :key="product.id_product"
-                        :data-id="product.id_product">
-                        <img :src="imgCatalog" alt="Some img">
-                        <div class="desc">
-                            <h3>{{product.product_name}}</h3>
-                            <p>{{product.price}}₽</p>
-                            <button class="buy-btn" @click="deleteProduct(product)">Удалить</button>
-                        </div>
-                    </div>
-                </div>
+                <search></search>
+                <basket></basket>
             </div>
         </header>
         <main>
-            <div class="products" :class="{invisible: isVisibleCart}">
-                <h2 v-if="isEmptyProducts">Нет данных</h2>
-                <div class="product-item" v-for="product of products" :key="product.id_product"
+            <div class="products">
+                <h2 v-if="filtered.length==0">Нет данных</h2>
+                <div class="product-item" v-for="product of filtered" :key="product.id_product"
                     :data-id="product.id_product">
                     <img :src="imgCatalog" alt="Some img">
                     <div class="desc">
@@ -54,6 +37,8 @@
         integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="js/searchComp.js"></script>
+    <script src="js/basketComp.js"></script>
     <script src="js/main.js"></script>
 </body>
 

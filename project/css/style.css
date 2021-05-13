@@ -67,6 +67,8 @@ img {
     padding: 15px
 }
 .cart{
+    display: flex;
+    justify-content: space-between;
     position: relative;
 }
 .cart-block{
